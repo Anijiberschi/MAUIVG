@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodel="clr-namespace:MyApp.ViewModel"
+             xmlns:model="clr-namespace:MyApp.Model" 
+             x:Class="MyApp.View.DetailsView"             
+             x:DataType="viewmodel:DetailsViewModel"
+             Title="DetailsView">
+    
+    <VerticalStackLayout>
+        <HorizontalStackLayout Padding="10" Spacing="10">
+            <Label Text="Emulator : " VerticalOptions="Center"/>
+            <Switch OnColor="{StaticResource Primary}"
+                    ThumbColor="{StaticResource Primary}" 
+                    IsToggled="{Binding EmulatorON_OFF}"
+                    VerticalOptions="Center"/>            
+        </HorizontalStackLayout>
+        <Grid ColumnDefinitions="0.1*,0.3*,*" RowDefinitions="*,*,*,*,*" Padding="20" RowSpacing="20">
+            <Label  Grid.Column="0" Grid.Row="0" Text="Id:" VerticalOptions="Center"/>
+            <Entry  Grid.Column="1" Grid.Row="0"  
+                    Text="{Binding Id}"
+                    VerticalOptions="Center" 
+                    HorizontalOptions="Center" 
+                    WidthRequest="300"/>
+            <Label  Grid.Column="0" Grid.Row="1" Text="Nom:" VerticalOptions="Center"/>
+            <Entry  Grid.Column="1" Grid.Row="1"
+                    Text="{Binding Name}"
+                    VerticalOptions="Center" 
+                    HorizontalOptions="Center" 
+                    WidthRequest="300" />
+            <Label  Grid.Column="0" Grid.Row="2" Text="Description:" VerticalOptions="Center"/>
+            <Entry  Grid.Column="1" Grid.Row="2"
+                    Text="{Binding Description}"
+                    VerticalOptions="Center" 
+                    HorizontalOptions="Center" 
+                    WidthRequest="300" />
+            <Label  Grid.Column="0" Grid.Row="3" Text="Image:" VerticalOptions="Center"/>
+            <Entry  Grid.Column="1" Grid.Row="3" 
+                    Text="{Binding Picture}"
+                    VerticalOptions="Center" 
+                    HorizontalOptions="Center" 
+                    WidthRequest="300" />
+            <Button x:Name="MyAnimatedButton"
+                    Grid.Column="1"
+                    Grid.Row="4"
+                    WidthRequest="100" 
+                    HorizontalOptions="Center"
+                    Text="Valider"
+                    Command="{Binding ChangeObjectParametersCommand}"
+                    Clicked="MyAnimatedButton_Clicked"
+                    IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:BaseViewModel}}, Path= IsNotBusy}"/>
+            
+        </Grid>
+        <HorizontalStackLayout Spacing="20">
+            <Label Text="Serial Data: "></Label>
+            <Label Text="{Binding SerialBufferContent}" TextColor="Red"></Label>
+        </HorizontalStackLayout>
+
+    </VerticalStackLayout>
+</ContentPage>
