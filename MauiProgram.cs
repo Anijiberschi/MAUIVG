@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Maui;
 using Microcharts.Maui;
 using Microsoft.Extensions.Logging;
+using Microsoft.Maui.Hosting;
+using MyApp.Converters;
 using System.Xml;
 
 namespace MyApp
@@ -21,9 +23,10 @@ namespace MyApp
                 });
 
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
 #endif
 
+            // Views et ViewModels
             builder.Services.AddSingleton<MainView>();
             builder.Services.AddSingleton<MainViewModel>();
 
@@ -33,9 +36,19 @@ namespace MyApp
             builder.Services.AddTransient<GraphView>();
             builder.Services.AddTransient<GraphViewModel>();
 
-            builder.Services.AddSingleton<DeviceOrientationService>();
+            // Services
+            builder.Services.AddSingleton<BarcodeScannerService>();
             builder.Services.AddSingleton<JSONServices>();
             builder.Services.AddSingleton<CSVServices>();
+
+            // Resource Dictionaries
+            builder.Services.AddSingleton<ResourceDictionary>(new ResourceDictionary
+            {
+                // Ajouter les convertisseurs
+                { "BoolToColorConverter", new BoolToColorConverter() },
+                { "BoolToStatusConverter", new BoolToStatusConverter() },
+                { "StringNotEmptyConverter", new StringNotEmptyConverter() }
+            });
 
             return builder.Build();
         }

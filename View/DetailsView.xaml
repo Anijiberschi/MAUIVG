@@ -5,56 +5,134 @@
              xmlns:model="clr-namespace:MyApp.Model" 
              x:Class="MyApp.View.DetailsView"             
              x:DataType="viewmodel:DetailsViewModel"
-             Title="DetailsView">
-    
-    <VerticalStackLayout>
-        <HorizontalStackLayout Padding="10" Spacing="10">
-            <Label Text="Emulator : " VerticalOptions="Center"/>
-            <Switch OnColor="{StaticResource Primary}"
-                    ThumbColor="{StaticResource Primary}" 
-                    IsToggled="{Binding EmulatorON_OFF}"
-                    VerticalOptions="Center"/>            
-        </HorizontalStackLayout>
-        <Grid ColumnDefinitions="0.1*,0.3*,*" RowDefinitions="*,*,*,*,*" Padding="20" RowSpacing="20">
-            <Label  Grid.Column="0" Grid.Row="0" Text="Id:" VerticalOptions="Center"/>
-            <Entry  Grid.Column="1" Grid.Row="0"  
-                    Text="{Binding Id}"
-                    VerticalOptions="Center" 
-                    HorizontalOptions="Center" 
-                    WidthRequest="300"/>
-            <Label  Grid.Column="0" Grid.Row="1" Text="Nom:" VerticalOptions="Center"/>
-            <Entry  Grid.Column="1" Grid.Row="1"
-                    Text="{Binding Name}"
-                    VerticalOptions="Center" 
-                    HorizontalOptions="Center" 
-                    WidthRequest="300" />
-            <Label  Grid.Column="0" Grid.Row="2" Text="Description:" VerticalOptions="Center"/>
-            <Entry  Grid.Column="1" Grid.Row="2"
-                    Text="{Binding Description}"
-                    VerticalOptions="Center" 
-                    HorizontalOptions="Center" 
-                    WidthRequest="300" />
-            <Label  Grid.Column="0" Grid.Row="3" Text="Image:" VerticalOptions="Center"/>
-            <Entry  Grid.Column="1" Grid.Row="3" 
-                    Text="{Binding Picture}"
-                    VerticalOptions="Center" 
-                    HorizontalOptions="Center" 
-                    WidthRequest="300" />
-            <Button x:Name="MyAnimatedButton"
-                    Grid.Column="1"
-                    Grid.Row="4"
-                    WidthRequest="100" 
-                    HorizontalOptions="Center"
-                    Text="Valider"
-                    Command="{Binding ChangeObjectParametersCommand}"
-                    Clicked="MyAnimatedButton_Clicked"
-                    IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:BaseViewModel}}, Path= IsNotBusy}"/>
-            
-        </Grid>
-        <HorizontalStackLayout Spacing="20">
-            <Label Text="Serial Data: "></Label>
-            <Label Text="{Binding SerialBufferContent}" TextColor="Red"></Label>
-        </HorizontalStackLayout>
+             Title="Détails du livre">
 
-    </VerticalStackLayout>
+    <ScrollView>
+        <Grid RowDefinitions="Auto,*" Padding="20">
+            <!-- En-tête avec scan et contrôles -->
+            <VerticalStackLayout Grid.Row="0" Spacing="15">
+                <Frame BorderColor="{StaticResource Primary}" 
+                       CornerRadius="10" 
+                       Padding="15" 
+                       BackgroundColor="#f8f9fa">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <VerticalStackLayout Grid.Column="0" Spacing="5">
+                            <Label Text="Scanner ISBN" 
+                                   FontSize="18" 
+                                   FontAttributes="Bold" />
+
+                            <Label Text="Scannez le code-barres d'un livre ou entrez l'ISBN manuellement" 
+                                   FontSize="14" 
+                                   TextColor="Gray" />
+                        </VerticalStackLayout>
+
+                        <HorizontalStackLayout Grid.Column="1" Spacing="10" VerticalOptions="Center">
+                            <Label Text="Émulateur" 
+                                   VerticalOptions="Center" />
+
+                            <Switch OnColor="{StaticResource Primary}"
+                                    ThumbColor="{StaticResource Primary}" 
+                                    IsToggled="{Binding EmulatorON_OFF}"
+                                    VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+                    </Grid>
+                </Frame>
+
+                <Grid ColumnDefinitions="*,Auto">
+                    <Entry Grid.Column="0" 
+                           Text="{Binding ISBN}" 
+                           Placeholder="Saisir l'ISBN ici"
+                           Keyboard="Numeric"
+                           FontSize="16" />
+
+                    <Button Grid.Column="1"
+                            Text="Rechercher"
+                            Command="{Binding SearchISBNCommand}"
+                            BackgroundColor="{StaticResource Primary}"
+                            Margin="10,0,0,0" />
+                </Grid>
+
+                <!-- Affichage des données scannées -->
+                <Frame BorderColor="LightGray" CornerRadius="5" BackgroundColor="#f8f9fa" IsVisible="{Binding ScanBufferContent, Converter={StaticResource StringNotEmptyConverter}}">
+                    <VerticalStackLayout>
+                        <Label Text="Données scannées:" FontAttributes="Bold" />
+                        <Label Text="{Binding ScanBufferContent}" FontFamily="Monospace" />
+                    </VerticalStackLayout>
+                </Frame>
+            </VerticalStackLayout>
+
+            <!-- Formulaire détaillé du livre -->
+            <VerticalStackLayout Grid.Row="1" Spacing="15" Margin="0,15,0,0">
+                <!-- Informations principales -->
+                <Frame BorderColor="{StaticResource Primary}" CornerRadius="10" Padding="15">
+                    <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="15" ColumnSpacing="15">
+                        <Label Grid.Column="0" Grid.Row="0" Text="Titre:" FontAttributes="Bold" VerticalOptions="Center" />
+                        <Entry Grid.Column="1" Grid.Row="0" Text="{Binding Title}" Placeholder="Titre du livre" />
+
+                        <Label Grid.Column="0" Grid.Row="1" Text="Auteur:" FontAttributes="Bold" VerticalOptions="Center" />
+                        <Entry Grid.Column="1" Grid.Row="1" Text="{Binding Author}" Placeholder="Auteur du livre" />
+
+                        <Label Grid.Column="0" Grid.Row="2" Text="Éditeur:" FontAttributes="Bold" VerticalOptions="Center" />
+                        <Entry Grid.Column="1" Grid.Row="2" Text="{Binding Publisher}" Placeholder="Éditeur" />
+
+                        <Label Grid.Column="0" Grid.Row="3" Text="Catégorie:" FontAttributes="Bold" VerticalOptions="Center" />
+                        <Entry Grid.Column="1" Grid.Row="3" Text="{Binding Category}" Placeholder="Catégorie du livre" />
+                    </Grid>
+                </Frame>
+
+                <!-- Informations de publication -->
+                <Frame BorderColor="LightGray" CornerRadius="10" Padding="15">
+                    <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="15" ColumnSpacing="15">
+                        <Label Grid.Column="0" Grid.Row="0" Text="Prix:" FontAttributes="Bold" VerticalOptions="Center" />
+                        <Entry Grid.Column="1" Grid.Row="0" Text="{Binding Price}" Placeholder="Prix du livre" Keyboard="Numeric" />
+
+                        <Label Grid.Column="0" Grid.Row="1" Text="Quantité:" FontAttributes="Bold" VerticalOptions="Center" />
+                        <Entry Grid.Column="1" Grid.Row="1" Text="{Binding Quantity}" Placeholder="Nombre d'exemplaires" Keyboard="Numeric" />
+
+                        <Label Grid.Column="0" Grid.Row="2" Text="Date de publication:" FontAttributes="Bold" VerticalOptions="Center" />
+                        <DatePicker Grid.Column="1" Grid.Row="2" Date="{Binding PublicationDate}" />
+
+                        <Label Grid.Column="0" Grid.Row="3" Text="Disponible:" FontAttributes="Bold" VerticalOptions="Center" />
+                        <Switch Grid.Column="1" Grid.Row="3" IsToggled="{Binding IsAvailable}" OnColor="{StaticResource Primary}" HorizontalOptions="Start" />
+                    </Grid>
+                </Frame>
+
+                <!-- Détails supplémentaires -->
+                <Frame BorderColor="LightGray" CornerRadius="10" Padding="15">
+                    <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="15" ColumnSpacing="15">
+                        <Label Grid.Column="0" Grid.Row="0" Text="Langue:" FontAttributes="Bold" VerticalOptions="Center" />
+                        <Entry Grid.Column="1" Grid.Row="0" Text="{Binding Language}" Placeholder="Langue du livre" />
+
+                        <Label Grid.Column="0" Grid.Row="1" Text="Pages:" FontAttributes="Bold" VerticalOptions="Center" />
+                        <Entry Grid.Column="1" Grid.Row="1" Text="{Binding PageCount}" Placeholder="Nombre de pages" Keyboard="Numeric" />
+
+                        <Label Grid.Column="0" Grid.Row="2" Text="Emplacement:" FontAttributes="Bold" VerticalOptions="Center" />
+                        <Entry Grid.Column="1" Grid.Row="2" Text="{Binding Location}" Placeholder="Emplacement dans la bibliothèque" />
+
+                        <Label Grid.Column="0" Grid.Row="3" Text="Image URL:" FontAttributes="Bold" VerticalOptions="Center" />
+                        <Entry Grid.Column="1" Grid.Row="3" Text="{Binding CoverUrl}" Placeholder="URL de la couverture" />
+                    </Grid>
+                </Frame>
+
+                <!-- Notes -->
+                <Frame BorderColor="LightGray" CornerRadius="10" Padding="15">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Notes:" FontAttributes="Bold" />
+                        <Editor Text="{Binding Notes}" 
+                                Placeholder="Notes supplémentaires sur le livre"
+                                HeightRequest="100"
+                                AutoSize="TextChanges" />
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- Boutons d'action -->
+                <Button Text="Enregistrer"
+                        Command="{Binding SaveBookCommand}"
+                        HeightRequest="50"
+                        FontAttributes="Bold"
+                        BackgroundColor="{StaticResource Primary}"
+                        Margin="0,15,0,0" />
+            </VerticalStackLayout>
+        </Grid>
+    </ScrollView>
 </ContentPage>

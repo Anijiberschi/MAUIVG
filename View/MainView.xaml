@@ -4,104 +4,167 @@
              xmlns:viewmodel="clr-namespace:MyApp.ViewModel"
              xmlns:model="clr-namespace:MyApp.Model"             
              x:Class="MyApp.View.MainView"
-             x:DataType="viewmodel:MainViewModel">
-    <ScrollView>
-     
-        <VerticalStackLayout Spacing="20" Padding="20">
-            <Button     Text="Add object"
-                        Grid.Column="0"
-                        HorizontalOptions="Start"
-                        HeightRequest="50"
-                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MainViewModel}}, Path=GoToDetailsCommand}"
-                        CommandParameter="0"
-                        IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MainViewModel}}, Path=IsNotBusy}">
-            </Button>
-            <HorizontalStackLayout Spacing="10">
-                <Button     Text="Export to CSV"
-                            Grid.Column="0"
-                            HorizontalOptions="Start"
-                            HeightRequest="50"
-                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MainViewModel}}, Path=PrintToCSVCommand}"
-                            CommandParameter="0"
-                            IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MainViewModel}}, Path=IsNotBusy}">
-                </Button>
-                <Button     Text="Load from CSV"
-                            Grid.Column="0"
-                            HorizontalOptions="Start"
-                            HeightRequest="50"
-                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MainViewModel}}, Path=LoadFromCSVCommand}"
-                            CommandParameter="0"
-                            IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MainViewModel}}, Path=IsNotBusy}">
-                </Button>
-                <Button     Text="Graph"
-                            Grid.Column="0"
-                            HorizontalOptions="Start"
-                            HeightRequest="50"
-                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MainViewModel}}, Path=GoToGraphCommand}"
-                            CommandParameter="0"
-                            IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MainViewModel}}, Path=IsNotBusy}">
-                </Button>
-                <Button     Text="Pop"
-                            Grid.Column="0"
-                            HorizontalOptions="Start"
-                            HeightRequest="50"
-                            Clicked="DisplayPopup"
-                            IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MainViewModel}}, Path=IsNotBusy}">
-                </Button>
-                <Button     Text="Upload JSON"
-                            Grid.Column="0"
-                            HorizontalOptions="Start"
-                            HeightRequest="50"
-                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MainViewModel}}, Path=UploadJSONCommand}"
-                            IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MainViewModel}}, Path=IsNotBusy}">
-                </Button>
-            </HorizontalStackLayout>
+             x:DataType="viewmodel:MainViewModel"
+             Title="Bibliothèque">
+    <Grid RowDefinitions="Auto,*">
+        <!-- En-tête avec recherche et actions -->
+        <VerticalStackLayout Grid.Row="0" Padding="15" BackgroundColor="#f5f5f5">
+            <Label Text="Gestion de Bibliothèque" 
+                   FontSize="24"
+                   FontAttributes="Bold" 
+                   HorizontalOptions="Center" 
+                   Margin="0,0,0,15"/>
 
+            <SearchBar Placeholder="Rechercher par titre, auteur, ISBN..." 
+                       SearchCommand="{Binding SearchBooksCommand}"
+                       SearchCommandParameter="{Binding Text, Source={RelativeSource Self}}"
+                       Margin="0,0,0,10" />
+
+            <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
+                <Button Text="Ajouter un livre"
+                        Command="{Binding GoToDetailsCommand}"
+                        CommandParameter="0"
+                        BackgroundColor="{StaticResource Primary}"
+                        WidthRequest="130"
+                        HeightRequest="40"
+                        IsEnabled="{Binding IsNotBusy}"/>
+
+                <Button Text="Configurer CSV"
+                        Command="{Binding ConfigureCSVCommand}"
+                        BackgroundColor="#5A6268"
+                        WidthRequest="130"
+                        HeightRequest="40"
+                        IsEnabled="{Binding IsNotBusy}"/>
+
+                <Button Text="Exporter CSV"
+                        Command="{Binding PrintToCSVCommand}"
+                        BackgroundColor="#5A6268"
+                        WidthRequest="130"
+                        HeightRequest="40"
+                        IsEnabled="{Binding IsNotBusy}"/>
+
+                <Button Text="Importer CSV"
+                        Command="{Binding LoadFromCSVCommand}"
+                        BackgroundColor="#5A6268"
+                        WidthRequest="130"
+                        HeightRequest="40"
+                        IsEnabled="{Binding IsNotBusy}"/>
+
+                <Button Text="Statistiques"
+                        Command="{Binding GoToGraphCommand}"
+                        BackgroundColor="#28A745"
+                        WidthRequest="130"
+                        HeightRequest="40"
+                        IsEnabled="{Binding IsNotBusy}"/>
+
+                <Button Text="Synchroniser"
+                        Command="{Binding UploadJSONCommand}"
+                        BackgroundColor="#17A2B8"
+                        WidthRequest="130"
+                        HeightRequest="40"
+                        IsEnabled="{Binding IsNotBusy}"/>
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+
+        <!-- Liste des livres -->
+        <ScrollView Grid.Row="1">
             <CollectionView ItemsSource="{Binding MyObservableList}"
                             SelectionMode="None">
                 <CollectionView.ItemsLayout>
-                    <GridItemsLayout    Orientation="Vertical"
-                                        Span="2"  
-                                        HorizontalItemSpacing="10"
-                                        VerticalItemSpacing="10" />
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />
                 </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
-                    <DataTemplate  x:DataType="model:StrangeAnimal">
-                        <Border     StrokeThickness="4"
-                            StrokeShape="RoundRectangle 10,10,10,10"
-                            Padding="10">
-                            <Grid HeightRequest="100" ColumnDefinitions="0.5*,*">
-                                <ImageButton  Grid.Column="0"
-                                Source="{Binding Picture}"
-                                HorizontalOptions="Start"
-                                Aspect="AspectFit"
-                                HeightRequest="100"
-                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MainViewModel}}, Path=GoToDetailsCommand}"
-                                CommandParameter="{Binding Id}"
-                                IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MainViewModel}}, Path=IsNotBusy}">
-                                </ImageButton>
-                                <VerticalStackLayout Grid.Column="1">
-                                    <Label  Text="{Binding Path=Id,StringFormat='ID: {0:S2}'}"
-                                    Style="{StaticResource SubHeadline}"
-                                    FontSize="15"
-                                    HorizontalOptions="Start"
-                                    VerticalOptions="Center"/>
-                                    <Label  Text="{Binding Path=Name,StringFormat='Name: {0:S10}'}"
-                                    Style="{StaticResource SubHeadline}"
-                                    FontSize="15"
-                                    HorizontalOptions="Start"
-                                    VerticalOptions="Center"/>
-                                    <Label  Text="{Binding Path=Description,StringFormat='Description: {0:S10}'}"
-                                    Style="{StaticResource SubHeadline}"
-                                    FontSize="15"
-                                    HorizontalOptions="Start"
-                                    VerticalOptions="Center"/>
+                    <DataTemplate x:DataType="model:Book">
+                        <Frame BorderColor="{StaticResource Primary}"
+                               CornerRadius="10"
+                               Margin="15,5"
+                               Padding="15">
+                            <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto,Auto">
+                                <!-- Colonne 1: Indicateur de disponibilité et date  -->
+                                <VerticalStackLayout Grid.Column="0" Grid.RowSpan="3" Margin="0,0,15,0">
+                                    <Ellipse Fill="{Binding IsAvailable, Converter={StaticResource BoolToColorConverter}}"
+                                             WidthRequest="20"
+                                             HeightRequest="20"
+                                             HorizontalOptions="Center"
+                                             Margin="0,0,0,5"/>
+
+                                    <Label Text="{Binding Quantity, StringFormat='{0} ex.'}"
+                                           FontSize="14"
+                                           HorizontalOptions="Center"/>
+
+                                    <Label Text="{Binding PublicationDate, StringFormat='{0:yyyy}'}"
+                                           FontSize="14"
+                                           HorizontalOptions="Center"
+                                           Margin="0,5,0,0"/>
+                                </VerticalStackLayout>
+
+                                <!-- Colonne 2: Informations principales du livre -->
+                                <Label Grid.Column="1" Grid.Row="0" 
+                                       Text="{Binding Title}" 
+                                       FontSize="18" 
+                                       FontAttributes="Bold"/>
+
+                                <Label Grid.Column="1" Grid.Row="1" 
+                                       Text="{Binding Author, StringFormat='par {0}'}" 
+                                       FontSize="14"/>
+
+                                <StackLayout Grid.Column="1" Grid.Row="2" Orientation="Horizontal" Spacing="10">
+                                    <Label Text="{Binding ISBN}" 
+                                           FontSize="12" 
+                                           TextColor="Gray"/>
+
+                                    <Label Text="{Binding Category}" 
+                                           FontSize="12" 
+                                           TextColor="Gray"/>
+
+                                    <Label Text="{Binding Language}" 
+                                           FontSize="12" 
+                                           TextColor="Gray"/>
+                                </StackLayout>
+
+                                <!-- Colonne 3: Prix et bouton détails -->
+                                <VerticalStackLayout Grid.Column="2" Grid.RowSpan="3">
+                                    <Label Text="{Binding Price, StringFormat='{0:C}'}" 
+                                           FontSize="18" 
+                                           FontAttributes="Bold" 
+                                           TextColor="{StaticResource Primary}"
+                                           HorizontalOptions="End"/>
+
+                                    <Button Text="Détails"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MainViewModel}}, Path=GoToDetailsCommand}"
+                                            CommandParameter="{Binding ISBN}"
+                                            BackgroundColor="{StaticResource Primary}"
+                                            HeightRequest="35"
+                                            CornerRadius="5"
+                                            Margin="0,10,0,0"/>
                                 </VerticalStackLayout>
                             </Grid>
-                        </Border>
+                        </Frame>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center">
+                        <Label Text="Aucun livre trouvé"
+                               FontSize="20"
+                               TextColor="Gray"
+                               HorizontalOptions="Center"/>
+                        <Label Text="Ajoutez de nouveaux livres ou modifiez vos critères de recherche"
+                               FontSize="16"
+                               TextColor="Gray"
+                               HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
             </CollectionView>
-        </VerticalStackLayout>
-    </ScrollView>   
+        </ScrollView>
+
+        <!-- Indicateur d'activité -->
+        <ActivityIndicator Grid.RowSpan="2"
+                           IsVisible="{Binding IsBusy}"
+                           IsRunning="{Binding IsBusy}"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           Color="{StaticResource Primary}"
+                           WidthRequest="50"
+                           HeightRequest="50" />
+    </Grid>
 </ContentPage>

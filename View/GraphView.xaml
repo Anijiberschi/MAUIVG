@@ -1,10 +1,58 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"             
              xmlns:micro="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
+             xmlns:viewmodel="clr-namespace:MyApp.ViewModel"
+             x:DataType="viewmodel:GraphViewModel"
              x:Class="MyApp.View.GraphView"
-             Title="GraphView">
-    <Grid>
-        <micro:ChartView Chart="{Binding MyObservableChart}"/>
+             Title="Statistiques de la bibliothèque">
+    <Grid RowDefinitions="Auto,*">
+        <!-- En-tête avec titre et boutons de contrôle -->
+        <VerticalStackLayout Grid.Row="0" Padding="20,15" Spacing="15" BackgroundColor="#f5f5f5">
+            <Label Text="{Binding Title}" 
+                   FontSize="24"
+                   FontAttributes="Bold" 
+                   HorizontalOptions="Center" />
+
+            <Frame BorderColor="{StaticResource Primary}" 
+                   CornerRadius="10" 
+                   Padding="15" 
+                   BackgroundColor="White">
+                <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
+                    <Button Text="Catégories" 
+                            Command="{Binding SwitchToCategoryChartCommand}" 
+                            WidthRequest="120"
+                            HeightRequest="40"
+                            BackgroundColor="{StaticResource Primary}" />
+
+                    <Button Text="Langues" 
+                            Command="{Binding SwitchToLanguageChartCommand}" 
+                            WidthRequest="120"
+                            HeightRequest="40"
+                            BackgroundColor="#28A745" />
+
+                    <Button Text="Prix" 
+                            Command="{Binding SwitchToPriceChartCommand}" 
+                            WidthRequest="120"
+                            HeightRequest="40"
+                            BackgroundColor="#17A2B8" />
+
+                    <Button Text="Années" 
+                            Command="{Binding SwitchToYearChartCommand}" 
+                            WidthRequest="120"
+                            HeightRequest="40"
+                            BackgroundColor="#FD7E14" />
+                </HorizontalStackLayout>
+            </Frame>
+        </VerticalStackLayout>
+
+        <!-- Graphique -->
+        <Frame Grid.Row="1" 
+               Margin="20" 
+               BorderColor="{StaticResource Primary}" 
+               CornerRadius="10" 
+               Padding="10">
+            <micro:ChartView Chart="{Binding MyObservableChart}" />
+        </Frame>
     </Grid>
 </ContentPage>
